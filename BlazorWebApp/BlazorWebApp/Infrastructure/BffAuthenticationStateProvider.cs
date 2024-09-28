@@ -34,6 +34,7 @@ namespace BlazorWebApp.Infrastructure
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var ClaimsPrincipal = _httpContextAccessor.HttpContext.User;
+            //ClaimsPrincipal isn't persisted, get's fetched every request, not super handy with BFF so we best save more info in our userInfoProvider concerning the session and expiration etc...
             if (ClaimsPrincipal == null || !ClaimsPrincipal.Identity.IsAuthenticated)
             {
                 return await GetAuthenticationState();
