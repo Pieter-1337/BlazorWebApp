@@ -31,51 +31,6 @@ namespace BlazorWebApp.Infrastructure
             _cookieProvider = cookieProvider;
         }
 
-        //public override async Task<AuthenticationState> GetAuthenticationStateAsync()
-        //{
-        //    var cookies = _httpContextAccessor?.HttpContext?.Request.Cookies;
-        //    var cookieName = ".AspNetCore.Cookies";
-        //    if (cookies != null && cookies.TryGetValue(cookieName, out string authCookieValue))
-        //    {
-        //        // Call BFF endpoint to check authentication status
-        //        _httpClient.BaseAddress = new Uri("https://localhost:44305");
-
-        //        // Add the cookie to the request header manually
-        //        var requestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo");
-        //        requestMessage.Headers.Add("Cookie", $"{cookieName}={authCookieValue}");
-
-        //        var response = await _httpClient.SendAsync(requestMessage);
-        //        var jsonResponse = await response.Content.ReadAsStringAsync();
-
-        //        if (response.IsSuccessStatusCode && jsonResponse != "undefined")
-        //        {
-
-        //            // User is authenticated, parse the response to get claims or identity
-        //            var claimsDict = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonResponse);
-        //            var claims = new List<Claim>();
-
-        //            // Iterate through the claims and print them
-        //            foreach (var claim in claimsDict)
-        //            {
-        //                claims.Add(new Claim(type: claim.Key, value: claim.Value));
-        //                if(claim.Key == "given_name")
-        //                {
-        //                    claims.Add(new Claim(type: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name", value: claim.Value));
-        //                }
-        //                Console.WriteLine($"{claim.Key}: {claim.Value}");
-        //            }
-        //            var userClaims = claims;// parse response to claims (usually a JSON format)
-        //            var identity = new ClaimsIdentity(userClaims, "Bff");
-        //            var user = new ClaimsPrincipal(identity);
-        //            this._claimsPrincipal = user;
-        //            return new AuthenticationState(user);
-        //        }
-
-        //          // User is not authenticated
-        //          return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-        //      }
-        //    }
-
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var ClaimsPrincipal = _httpContextAccessor.HttpContext.User;
@@ -97,13 +52,12 @@ namespace BlazorWebApp.Infrastructure
                 
         }
 
-
         private async Task<AuthenticationState> GetAuthenticationState()
         {
             var cookie = _cookieProvider.GetCookie(Constants.BffCookieName);
             if (cookie != null)
             {
-                //Get initial userinfo from BFF
+                //Get Id token info from IDP through BFF
                 var requestMessage = new HttpRequestMessage(HttpMethod.Get, "/userinfo");
                 _cookieProvider.AddCookieToRequestHeaders(cookie, requestMessage.Headers);
 
