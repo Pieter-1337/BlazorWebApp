@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
+@inject IHttpContextAccessor httpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,7 +17,10 @@
 </head>
 
 <body>
-    <Routes />
+    <CascadingAuthenticationState>
+        <Routes />
+    </CascadingAuthenticationState>
+    
     <script src="_framework/blazor.web.js"></script>
 </body>
 

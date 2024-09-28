@@ -1,4 +1,10 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using BlazorWebApp.Infrastructure.Interfaces
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject IUserInfoProvider userInfoProvider
+
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorWebApp</a>
     </div>
@@ -8,6 +14,27 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
+        <AuthorizeView>
+            <NotAuthorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Login">
+                        <span>Login</span>
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+            <Authorized>
+                <!--Add logged in user info with "at"Context-->
+                <li class="nav-item px-3">
+                    <span class="nav-link">Hi @userInfoProvider.GetDisplayName() - @userInfoProvider.GetEmailAddress()</span>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Logout">
+                        <span>Logout</span>
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
@@ -25,6 +52,33 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="randomImage">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Random image
+            </NavLink>
+        </div>
     </nav>
 </div>
+@* 
+@code {
+
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the current authentication state asynchronously
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        // Extract the user from the authentication state
+        var user = authState.User;
+
+        // Now you can use `user` to check if they are authenticated and their claims
+        if (user.Identity.IsAuthenticated)
+        {
+            // Do something if the user is authenticated
+        }
+    }
+} *@
 
